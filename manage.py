@@ -38,14 +38,14 @@ while 1:
             pw = input("PW: ")
             for i in userList:
                 if i.userid == userid:
+                    idfalse = False
                     if i.pw == pw:
                         loop = False
-                        pass
+                        break
                     else:
                         print("비밀번호가 잘못 입력되었습니다.")
                 else:
                     idfalse = True
-                    pass
             if idfalse:
                 print("존재하지 않는 아이디입니다.")
 
