@@ -45,7 +45,7 @@ sel = input("1. 추천 도서\n2. 도서 조회\n3. 대여/반납 현황\n4. 도
 if sel == '1':
     num = list(range(1, 11))  # num = [1,2,3,4,5,6,7,8,9,10]
     number = []  # 리스트선언
-    for i in range(3):  # 3번반복
+    for i in range(3):  # 3번 반복
         number.append(num.pop(num.index(random.choice(num))) - 1)  # random.choice(num)으로 1~10중 랜덤한 값을 추출한 뒤,
         # num.index로 해당 값의 위치를 추출하고, num.pop로 해당 위치의 값을 추출한 뒤 리스트에서 삭제한 후, number.append를 통해서 리스트에 3번 대입
     print(f'{" 추천 도서 목록 ":=^50}')
