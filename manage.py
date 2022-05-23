@@ -18,7 +18,10 @@ class User:
         print("ID:{0} PW:{1} NAME:{2} ADD:{3}".format(self.userid, self.pw, self.name, self.add))
 
 
-# 도서 목록은 딕셔너리로 고유번호: [저자, 책이름]
+# 도서 목록은 딕셔너리로 {고유번호: [저자, 책이름]}
+dic = {"001": ["저자", "책이름"], "002": ["저자", "책이름"]}
+print(dic)
+# print(dic.get('001')[1])  # 이런 식으로 리스트 값 뽑아내기 가능
 cnt = 0
 userList = []
 
