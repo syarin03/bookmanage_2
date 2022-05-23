@@ -1,5 +1,5 @@
 import random
-# test
+# test 주석
 
 class User:  # 회원 정보와 회원 관련 함수를 담을 클래스
     def __init__(self):  # 유사 c언어 구조체
