@@ -7,14 +7,14 @@ class User:  # 회원 정보와 회원 관련 함수를 담을 클래스
         self.name = None
         self.phone = None
         self.book = []
-        self.cnt2 = None
+        self.book_cnt = None
 
-    def set_user(self, user_id, password, name, phone, cnt2):  # 이건 입력받아서 해당 클래스 변수의 값을 저장하는 함수
+    def set_user(self, user_id, password, name, phone, book_cnt):  # 이건 입력받아서 해당 클래스 변수의 값을 저장하는 함수
         self.user_id = user_id
         self.password = password
         self.name = name
         self.phone = phone
-        self.cnt2 = cnt2
+        self.book_cnt = book_cnt
 
     def printinfo(self):  # 이건 해당 클래스 변수의 값을 출력해주는 함수, 사실 디버깅 용도
         print("ID:{0} PW:{1} NAME:{2} phone:{3}".format(
@@ -79,7 +79,7 @@ def main(nowlogin):  # 로그인 성공 후 메인화면
                             else:
                                 pass
                         sel4 = input("원하는 책의 고유번호를 입력해주세요.\n")
-                        if ((dic[sel4][2])) == "대여가능" and cnt1<3 and nowlogin.cnt2<3:
+                        if ((dic[sel4][2])) == "대여가능" and cnt1<3 and nowlogin.book_cnt<3:
                             borrow_book.append(dic[sel4][:2])
                             ((dic[sel4][2])) = nowlogin.user_id
                             cnt1 += 1
@@ -96,7 +96,7 @@ def main(nowlogin):  # 로그인 성공 후 메인화면
                                 pass
                         selbook = input("원하는 책의 이름을 입력해주세요.\n")
                         for i in list(dic.values()):
-                            if selbook == i[1] and cnt1<3 and nowlogin.cnt2<3:
+                            if selbook == i[1] and cnt1<3 and nowlogin.book_cnt<3:
                                 cnt1 += 1
                                 borrow_book.append([i[0], i[1]])
                                 i[2] = nowlogin.user_id
@@ -105,11 +105,11 @@ def main(nowlogin):  # 로그인 성공 후 메인화면
 
                     elif sel3 == '3':
                         nowlogin.book += borrow_book
-                        nowlogin.cnt2 += cnt1
+                        nowlogin.book_cnt += cnt1
                         cnt1 = 0
                         print(borrow_book)
-                        print("대여했습니다.")
-                        print(nowlogin.cnt2)
+                        print("대여했습니다.\n")
+                        print(nowlogin.book_cnt)
 
                         del borrow_book[:]
                         break
@@ -130,7 +130,7 @@ def main(nowlogin):  # 로그인 성공 후 메인화면
                                 rebook.append(nowlogin.book[int(i)]-1) #009가 9로 바뀌어서 nowlogin.book의 9번을 rebook에 추가하게 됨, 고쳐야됨!!!!!!!!!!!!!!
                                 del nowlogin.book[int(i)-1]
                     print(nowlogin.book)
-                    nowlogin.cnt2 -= 1
+                    nowlogin.book_cnt -= 1
 
                 if sel6 == '2':
                     print(nowlogin.book)
@@ -141,8 +141,8 @@ def main(nowlogin):  # 로그인 성공 후 메인화면
                             rebook.append(i[0:2])
                             nowlogin.book.remove(i[0:2])
                     print(nowlogin.book)
-                    if nowlogin.cnt2 > 1:
-                        nowlogin.cnt2 -= 1
+                    if nowlogin.book_cnt > 1:
+                        nowlogin.book_cnt -= 1
 
             if sel2 == '3':
                 print("반납된도서:", end_book)
@@ -182,7 +182,7 @@ def main(nowlogin):  # 로그인 성공 후 메인화면
         elif sel == '6':
             break
         elif sel == '7':
-            print("종료합니다")
+            print("종료합니다\n")
             exit(0)
         elif sel == '0': #테스트용
             print(dic.items())
@@ -196,35 +196,37 @@ while 1:
         userList.append("user" + str(cnt))  # 회원정보 리스트에 값 추가하기
         userList[cnt] = User()  # 해당 요소를 User 클래스로 만들어주기
         userList[cnt].set_user(input("ID: "), input("PW: "), input("NAME: "),
-                               input("phone: "),0)  # input을 통해 값을 입력받고 각각 값으로 저장
+                               input("phone: "), 0)  # input을 통해 값을 입력받고 각각 값으로 저장
         cnt += 1  # 이건 리스트 인덱스 때문에 늘려주는 것
 
     elif sel == '2':
         loop = True  # 단순 while문을 돌리기 위한 변수
         while loop:
+            if len(userList) == 0:
+                print("등록된 회원 정보가 존재하지 않습니다.\n회원가입 먼저 해주세요\n")
+                break
             userid = input("ID: ")
             pw = input("PW: ")
             for i in userList:  # 유저 리스트로 반복문을 굴리면서
                 wrong_id = False  # 미리 false로 해둔 이유는 로그인 정보가 일치하지 않을 때의 값을 true로 두기 위해서
                 if i.user_id == userid:  # 입력받은 아이디와 같은 아이디가 리스트 내에 있는지 확인하고
                     if i.password == pw:  # 여기서 비번까지 맞다면
-                        print("로그인에 성공하였습니다.")  # 성공 메세지 띄우고
+                        print("로그인에 성공하였습니다.\n")  # 성공 메세지 띄우고
                         nowlogin = i
                         main(i)  # 메인화면 함수를 불러오는 것
                         loop = False  # while문을 종료시켜야 하기 때문에 false로 바꿔주고
                         break  # 해당 for문 또한 종료
                     else:  # 이건 아이디는 있는데 비번이 잘못됐을 경우
-                        print("비밀번호가 잘못 입력되었습니다.")
+                        print("비밀번호가 잘못 입력되었습니다.\n")
                         break  # 해당 for문 또한 종료
                     wrong_id = False  # 얘는 계속 아이디가 틀린 게 아닌 이상 늘 false여야 하기 때문에 재차 초기화 해주는거고
                 else:  # 이건 아이디가 등록되어 있지 않은 경우, 틀린 경우도 포함이겠죠
                     wrong_id = True
-
             if wrong_id:  # 여기서 아이디가 있는지 없는지 확인하고 없다면
-                print("존재하지 않는 아이디입니다.")  # 존재하지 않는다고 알려주기
+                print("존재하지 않는 아이디입니다.\n")  # 존재하지 않는다고 알려주기
     elif sel == '3':
-        if len(userList) is 0:
-            print("등록된 회원 정보가 존재하지 않습니다.\n회원가입 먼저 해주세요")
+        if len(userList) == 0:
+            print("등록된 회원 정보가 존재하지 않습니다.\n회원가입 먼저 해주세요\n")
             continue
         loop = True
         while loop:
@@ -250,10 +252,10 @@ while 1:
                         print("입력하신 아이디가 존재하지 않습니다.\n")
                     break
             elif find_sel == '3':
-                print("돌아갑니다")
+                print("돌아갑니다\n")
                 break
     elif sel == '4':
-        print("종료합니다")
+        print("종료합니다\n")
         exit(0)
     """
     for i in userList:  # 이건 그냥 단순히 디버깅 용도로 회원 리스트 출력해주는 것
