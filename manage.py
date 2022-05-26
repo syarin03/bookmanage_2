@@ -31,7 +31,7 @@ rebook = []
 def main(nowlogin):  # 로그인 성공 후 메인화면
     cnt1 = 0
     while True:
-        sel = input("1. 추천 도서\n2. 도서 조회\n3. 대여/반납 현황\n4. 도서 기증\n5. 마이페이지\n6. 로그아웃\n7.끝내기\n> ")
+        sel = input("(1) 추천 도서\n(2) 도서 조회\n(3) 대여/반납 현황\n(4) 도서 기증\n(5) 마이페이지\n(6) 로그아웃\n(7)끝내기\n> ")
         if sel == '1':
             maxnum = int(list(dic.keys())[-1])+1
             num = list(range(1, maxnum))  # num = [1,2,3,4,5,6,7,8,9,10]
@@ -44,7 +44,7 @@ def main(nowlogin):  # 로그인 성공 후 메인화면
             for i in range(3):
                 print(list(dic.values())[number[i]][0] + " - " + list(dic.values())[number[i]][1])
         elif sel == '2':
-            cho = input("1.작가명으로 검색\n2.책이름으로 검색\n3.고유번호로 검색\n> ")
+            cho = input("(1)작가명으로 검색\n(2)책이름으로 검색\n(3)고유번호로 검색\n> ")
             if cho == '1':
                 name = input("작가명을 입력해주세요.\n> ")
                 for i in dic.values():
@@ -67,10 +67,10 @@ def main(nowlogin):  # 로그인 성공 후 메인화면
                     else:
                         pass
         elif sel == '3':
-            sel2 = input("1. 대여\n2. 반납\n> ")
+            sel2 = input("(1) 대여\n(2) 반납\n> ")
             if sel2 == '1':
                 while True:
-                    sel3 = input("1. 고유번호로 대여\n2. 도서명으로 대여\n3. 대여하기\n> ")
+                    sel3 = input("(1) 고유번호로 대여\n(2) 도서명으로 대여\n(3) 대여하기\n> ")
                     if sel3 == '1':
                         booknum = input("고유번호를 입력해주세요.\n> ") # 책의 고유번호를 사용해서 검색하는 부분
                         for i in dic.keys():
@@ -116,7 +116,7 @@ def main(nowlogin):  # 로그인 성공 후 메인화면
                     else:
                         print("대여 불가능\n")
             if sel2 == '2':
-                sel6 = input("1. 번호로 반납\n2. 이름으로 반납\n> ")
+                sel6 = input("(1) 번호로 반납\n(2) 이름으로 반납\n> ")
                 if sel6 == '1':
                     for j in nowlogin.book:  # 사용자가 가지고 있는 책리스트의 첫번째부터 서치
                         for i in dic.keys():  # i = 001, 002, 003
@@ -126,7 +126,7 @@ def main(nowlogin):  # 로그인 성공 후 메인화면
                     sel7 = input("도서번호 입력\n> ")
                     for j in nowlogin.book:  # 사용자가 가지고 있는 책리스트의 첫번째부터 서치
                         for i in dic.keys():  # i = 001, 002, 003
-                            if i == sel7 and dic[i][0] == j[0]:  # and sel7 == dic[i]:# 001, 002, 003을 키로 하는 value의 0번값이 사용자가 가지고 있는 책리스트의 0번값과 같다면
+                            if i == sel7 and dic[i][0] == j[0]:  # 001, 002, 003을 키로 하는 value의 0번값이 사용자가 가지고 있는 책리스트의 0번값과 같다면
                                 rebook.append(nowlogin.book[int(i)]-1) #009가 9로 바뀌어서 nowlogin.book의 9번을 rebook에 추가하게 됨, 고쳐야됨!!!!!!!!!!!!!!
                                 del nowlogin.book[int(i)-1]
                     print(nowlogin.book)
@@ -154,7 +154,7 @@ def main(nowlogin):  # 로그인 성공 후 메인화면
             dic.update({keynum:[doname, dobook]})
         elif sel == '5':
             nowlogin.printinfo()
-            sel01 = input("1. 대여중인 도서\n2. 반납한 도서\n3. 연체 도서\n4. 내정보변경\n5. 연체 정보\n> ")
+            sel01 = input("(1) 대여중인 도서\n(2) 반납한 도서\n(3) 연체 도서\n(4) 내정보변경\n(5) 연체 정보\n> ")
             if sel01 == '1':
                 print("대여중인 도서:", nowlogin.book)
             if sel01 == '2':
@@ -162,7 +162,7 @@ def main(nowlogin):  # 로그인 성공 후 메인화면
             if sel01 == '3':
                 pass
             if sel01 == '4':
-                sel02 = input("1. 아이디 변경\n2. 비밀번호 변경\n3. 이름 변경\n4. 전화번호 변경\n> ")
+                sel02 = input("(1) 아이디 변경\n(2) 비밀번호 변경\n(3) 이름 변경\n(4) 전화번호 변경\n> ")
                 if sel02 == '1':
                     change_id = input("변경할 아이디 입력\n> ")
                     nowlogin.user_id = change_id
@@ -191,7 +191,7 @@ cnt = 0
 userList = []  # 여기에 회원정보를 리스트로 담을 예정
 
 while 1:
-    sel = input("1. 회원가입\n2. 로그인\n3. ID/PW 찾기\n4. 프로그램 종료\n> ")
+    sel = input("(1) 회원가입\n(2) 로그인\n(3) ID/PW 찾기\n(4) 프로그램 종료\n> ")
     if sel == '1':
         registok = True
         userid = input("아이디\n> ")
@@ -212,8 +212,6 @@ while 1:
             userList[cnt].set_user(userid, password, name, phone, 0)  # input을 통해 값을 입력받고 각각 값으로 저장
             print("회원가입이 완료되었습니다.\n")
             cnt += 1  # 이건 리스트 인덱스 때문에 늘려주는 것
-        for i in userList:  # 디버깅
-            print(i.printinfo())
         
 
 
@@ -248,7 +246,7 @@ while 1:
             continue
         loop = True
         while loop:
-            find_sel = input("1. 아이디 찾기\n2. 비밀번호 찾기\n3. 돌아가기\n> ")
+            find_sel = input("(1) 아이디 찾기\n(2) 비밀번호 찾기\n(3) 돌아가기\n> ")
             if find_sel == '1':
                 for i in userList:
                     if input("이름 입력\n> ") == i.name:
