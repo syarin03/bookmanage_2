@@ -96,54 +96,59 @@ def main(nowlogin):  # 로그인 성공 후 메인화면
                                 pass
                         selbook = input("원하는 책의 이름을 입력해주세요.\n> ")
                         for i in list(dic.values()):
-                            if selbook == i[1] and cnt1<3 and nowlogin.book_cnt<3:
-                                cnt1 += 1
-                                borrow_book.append([i[0], i[1]])
-                                i[2] = nowlogin.user_id
-                                print(i[0],i[1])
-                                print(borrow_book)
-
+                            if selbook == i[1] and i[2] == "대여가능" and cnt1<3 and nowlogin.book_cnt<3:
+                                for j in dic.keys():
+                                    if dic[j] == i:
+                                        cnt1 += 1
+                                        borrow_book.append([j, i[0], i[1]])
+                                        i[2] = nowlogin.user_id
+                                        print(i[0],i[1])
+                                        print(borrow_book)
                     elif sel3 == '3':
                         nowlogin.book += borrow_book
+                        print(borrow_book)
                         nowlogin.book_cnt += cnt1
                         cnt1 = 0
-                        print(borrow_book)
-                        print("대여했습니다.\n")
+                        print("도서를 대여하였습니다.\n")
                         print(nowlogin.book_cnt)
+                        print(dic)
 
                         del borrow_book[:]
                         break
             if sel2 == '2':
                 sel6 = input("(1) 번호로 반납\n(2) 이름으로 반납\n> ")
+                # 반납 리스트에 아무것도 없으면 바로 빠꾸 먹이기
                 if sel6 == '1':
-                    for j in nowlogin.book:  # 사용자가 가지고 있는 책리스트의 첫번째부터 서치
-                        for i in dic.keys():  # i = 001, 002, 003
-                            if dic[i][0] == j[
-                                0]:  # and sel7 == dic[i]:# 001, 002, 003을 키로 하는 value의 0번값이 사용자가 가지고 있는 책리스트의 0번값과 같다면
-                                print(i + " - " + j[0] + " - " + j[1])
+                    print(nowlogin.book)
                     sel7 = input("도서번호 입력\n> ")
                     for j in nowlogin.book:  # 사용자가 가지고 있는 책리스트의 첫번째부터 서치
-                        for i in dic.keys():  # i = 001, 002, 003
-                            if i == sel7 and dic[i][0] == j[0]:  # 001, 002, 003을 키로 하는 value의 0번값이 사용자가 가지고 있는 책리스트의 0번값과 같다면
-                                rebook.append(nowlogin.book[int(i)]-1) #009가 9로 바뀌어서 nowlogin.book의 9번을 rebook에 추가하게 됨, 고쳐야됨!!!!!!!!!!!!!!
-                                del nowlogin.book[int(i)-1]
+                        for i in dic.values():
+                            if i == dic[sel7] and i[:2] == j[1:]: # 001의 value가 입력한 키의 value와 같고, 해당 value의 0번,1번이 해당 nowlogin.book의 첫번째와 같을 때
+                                rebook.append(j)
+                                nowlogin.book.remove(j)
+                                i[2] = "대여가능"
+                    print(rebook)
                     print(nowlogin.book)
-                    nowlogin.book_cnt -= 1
+                    if nowlogin.book_cnt > 0:
+                        nowlogin.book_cnt -= 1
 
                 if sel6 == '2':
                     print(nowlogin.book)
                     set8 = input("책 이름 입력\n> ")
-                    for i in dic.values():
-                        if i[1].find(set8) != -1: # i = [작가, 책이름, 상태], nowlogin.book = [[작가, 책이름],[작가, 책이름],[작가, 책이름]...]
+                    for j in dic.keys():
+                        if dic[j][1].find(set8) != -1: # i = [작가, 책이름, 상태], nowlogin.book = [[작가, 책이름],[작가, 책이름],[작가, 책이름]...]
                             cnt1 = 0
-                            rebook.append(i[0:2])
-                            nowlogin.book.remove(i[0:2])
+                            print(dic[j][0:2])
+                            rebook.append(dic[j][0:2])
+                            nowlogin.book.remove([j, dic[j][0], dic[j][1]])
+                            dic[j][2] = "대여가능"
                     print(nowlogin.book)
-                    if nowlogin.book_cnt > 1:
+                    if nowlogin.book_cnt > 0:
                         nowlogin.book_cnt -= 1
 
             if sel2 == '3':
-                print("반납된 도서: ", end_book)
+                print("반납된 도서:", end_book)
+
 
         elif sel == '4':
             doname = input("기증하실 책의 작가명을 입력해주세요\n> ")
