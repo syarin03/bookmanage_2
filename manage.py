@@ -1,5 +1,6 @@
 import random
 
+
 class User:  # 회원 정보와 회원 관련 함수를 담을 클래스
     def __init__(self):  # 유사 c언어 구조체
         self.user_id = None
@@ -18,21 +19,24 @@ class User:  # 회원 정보와 회원 관련 함수를 담을 클래스
             self.userid, self.pw, self.name, self.add))
 
 
-dic = {"001": ["황순원", "별"], "002": ["이광수", "흙"], "003": ["나도향", "벙어리삼룡이"], "004": ["전영택", "화수분"], "005": ["김유정", "동백꽃"], "006": [
-    "피터 스완슨", "여덟 건의 완벽한 살인"], "007": ["오노 후유미", "시귀1"], "008": ["나가츠키 탓페이", "Re:제로부터 시작하는 이세계 생활"], "009": ["베르나르 베르베르", "파피용"], "010": ["정찬주", "공부하다 죽어라"]}
+dic = {"001": ["황순원", "별"], "002": ["이광수", "흙"], "003": ["나도향", "벙어리삼룡이"], "004": ["전영택", "화수분"], "005": ["김유정", "동백꽃"],
+       "006": [
+           "피터 스완슨", "여덟 건의 완벽한 살인"], "007": ["오노 후유미", "시귀1"], "008": ["나가츠키 탓페이", "Re:제로부터 시작하는 이세계 생활"],
+       "009": ["베르나르 베르베르", "파피용"], "010": ["정찬주", "공부하다 죽어라"]}
+
 
 def main():  # 로그인 성공 후 메인화면
     while True:
         sel = input("1. 추천 도서\n2. 도서 조회\n3. 대여/반납 현황\n4. 도서 기증\n5. 마이페이지\n")
         if sel == '1':
-            maxnum = int(list(dic.keys())[-1])+1
+            maxnum = int(list(dic.keys())[-1]) + 1
             num = list(range(1, maxnum))  # num = [1,2,3,4,5,6,7,8,9,10]
             number = []  # 리스트선언
             for i in range(3):  # 3번반복
-            # random.choice(num)으로 1~10중 랜덤한 값을 추출한 뒤, num.index로 해당 값의 위치를 추출하고, num.pop로 해당 위치의 값을 추출한 뒤 리스트에서 삭제한 후, number.append를 통해서 리스트에 3번 대입
-                number.append(num.pop(num.index(random.choice(num)))-1)
+                # random.choice(num)으로 1~10중 랜덤한 값을 추출한 뒤, num.index로 해당 값의 위치를 추출하고, num.pop로 해당 위치의 값을 추출한 뒤 리스트에서 삭제한 후, number.append를 통해서 리스트에 3번 대입
+                number.append(num.pop(num.index(random.choice(num))) - 1)
             print(f'{"추천도서목록":=^40}')
-            print(f'{"저자":^20}'+f'{"도서명":^20}')
+            print(f'{"저자":^20}' + f'{"도서명":^20}')
             for i in range(3):
                 print(list(dic.values())[number[i]][0] + " - " + list(dic.values())[number[i]][1])
         elif sel == '2':
@@ -64,13 +68,15 @@ def main():  # 로그인 성공 후 메인화면
         elif sel == '4':
             doname = input("기부하실 책의 작가명을 입력해주세요.")
             dobook = input("기부하실 책의 이름을 입력해주세요.")
-            keynum = "0"+str(int(list(dic.keys())[-1])+1)
-            dic.update({keynum:[doname, dobook]})
+            keynum = "0" + str(int(list(dic.keys())[-1]) + 1)
+            dic.update({keynum: [doname, dobook]})
         elif sel == '5':
             pass
             # 마이페이지
-        elif sel == '0': #테스트용
+        elif sel == '0':  # 테스트용
             print(dic.items())
+
+
 # 도서 목록은 딕셔너리로 {고유번호: [저자, 책이름]}
 """
 dic = {"001": ["저자", "책이름"], "002": ["저자", "책이름"]}  # 대충 요런식
@@ -99,7 +105,7 @@ if sel == '1':
         # num.index로 해당 값의 위치를 추출하고, num.pop로 해당 위치의 값을 추출한 뒤 리스트에서 삭제한 후, number.append를 통해서 리스트에 3번 대입
     print(f'{" 추천 도서 목록 ":=^50}')
     print(f'{" 저자":<20}\t' + f'{"| 도서명":<30}')
-    print("-"*54)
+    print("-" * 54)
     for i in range(3):
         print(f' {dic_list[number[i]][0]:<12}', end="")
         if len(dic_list[number[i]][0]) < 6:
