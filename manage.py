@@ -8,7 +8,7 @@ class User:  # 회원 정보와 회원 관련 함수를 담을 클래스
         self.name = None
         self.add = None
 
-    def set_user(self, user_id, password, name, add):  # 이건 입력받아서 해당 클래스 변수의 값을 저장하는 함수
+    def set_user(self, user_id, password, name, add):  # 이건 입력 받아서 해당 클래스 변수의 값을 저장하는 함수
         self.user_id = user_id
         self.password = password
         self.name = name
