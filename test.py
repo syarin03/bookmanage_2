@@ -68,6 +68,10 @@ def main(nowlogin):  # 로그인 성공 후 메인화면
         elif sel == '3':
             sel2 = input("1. 대여, 2. 반납\n")
             if sel2 == '1':
+                for a in nowlogin.book:
+                    if a[3] >= 7:
+                        print("연체한 도서가 있어서 대출할 수 없습니다.")
+                        main(nowlogin)
                 if nowlogin.day > 0:
                     print(str(nowlogin.day) + "일 뒤에 다시 대여 가능합니다.")
                 else:
