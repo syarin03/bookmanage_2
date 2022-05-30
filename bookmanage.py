@@ -1,18 +1,21 @@
 import sqlite3
 
+
 class User():
     def __init__(self):
-        self.userid = None
-        self.userpw = None
-        self.username = None
-        self.userphone = None
+        self.userID = None
+        self.userPW = None
+        self.userName = None
+        self.userPhone = None
+        self.userBook = []
+
 
 class Book():
     def __init__(self):
-        self.booknum = None
-        self.bookname = None
-        self.bookwriter = None
-        self.bookstatus = 'Possible'
+        self.bookNum = None
+        self.bookName = None
+        self.bookWriter = None
+        self.bookStatus = 'Possible'
 
 
 con = sqlite3.connect("book.db", isolation_level=None)
