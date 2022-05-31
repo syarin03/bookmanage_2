@@ -3,6 +3,27 @@ import random
 import os
 import time
 
+class User:  # 회원 정보와 회원 관련 함수를 담을 클래스
+    def __init__(self):  # 유사 c언어 구조체
+        self.user_id = None
+        self.password = None
+        self.name = None
+        self.phone = None
+        self.book = []
+        self.cnt2 = None
+        self.day = None
+
+    def set_user(self, user_id, password, name, phone, cnt2, day):  # 이건 입력받아서 해당 클래스 변수의 값을 저장하는 함수
+        self.user_id = user_id
+        self.password = password
+        self.name = name
+        self.phone = phone
+        self.cnt2 = cnt2
+        self.day = day
+
+    def printinfo(self):  # 이건 해당 클래스 변수의 값을 출력해주는 함수, 사실 디버깅 용도
+        print("아이디: {0} 비밀번호: {1} 이름: {2} 전화번호: {3}".format(
+            self.user_id, self.password, self.name, self.phone))
 
 borrow_book = []
 end_book = []
@@ -24,7 +45,7 @@ def main(nowlogin):
             for i in range(3):
                 number.append(num.pop(num.index(random.choice(num))))
             for i in number:
-                c.execute(f"SELECT indexnum, bookname, writer FROM booktbl where bookid = {i}")
+                c.execute(f"SELECT indexnum, bookname, writer FROM booktbl where bookid == {i}")
                 choochun = c.fetchall()
                 print(str(choochun[0][0]) + " - " + str(choochun[0][1]) + " - " + str(choochun[0][2]))
         elif sel == '2':
@@ -33,7 +54,7 @@ def main(nowlogin):
                 name = input("저자을 입력해주세요.\n> ")
                 c.execute(f"SELECT indexnum, bookname, writer FROM booktbl where writer like '%{name}%'")
                 for i in c.fetchall():
-                    print(str(i[0]) + " - " + str(i[1]) + " ◆ " + str(i[2]))
+                    print(str(i[0]) + " - " + str(i[1]) + " - " + str(i[2]))
             elif cho == '2':
                 name = input("도서명을 입력해주세요.\n> ")
                 c.execute(f"SELECT indexnum, bookname, writer FROM booktbl where bookname like '%{name}%'")
@@ -194,7 +215,7 @@ def main(nowlogin):
             doprice = input("기증하실 책의 가격을 입력해주세요.\n> ")
             dolibrary = input("기증하실 도서관을 입력해주세요.\n> ")
             c.execute("SELECT COUNT(*) FROM booktbl")
-            maxnum = int(c.fetchall()[0][0]) + 1
+            maxnum = int(c.fetchall()[0][0])+1
             c.execute("SELECT * FROM booktbl ORDER BY indexnum DESC")
             maxindex = c.fetchall()[0][4]
             moreindex = str(int(maxindex[3:])+1)
@@ -203,7 +224,7 @@ def main(nowlogin):
             indexnumber = str(maxindex[:3] + str(moreindex))
             print(indexnumber)
             # indexnumber가 문제있나봄, 안됨
-            c.execute(f"insert into booktbl values ({maxnum}, {dolibrary}, '비치자료', '일반', '1', {dobook}, {doname}, {dopub}, {doyear}, {doplace}, '원본', {doprice}, '책', {doname}, '1', 'asdf')")
+            c.execute(f"insert into booktbl values ({maxnum}, {dolibrary}, '비치자료', '일반', '1', {dobook}, {doname}, {dopub}, {doyear}, {doplace}, '원본', {doprice}, '책', {doname}, '1')")
         elif sel == '5':
             while True:
                 nowlogin.printinfo()
@@ -234,7 +255,7 @@ def main(nowlogin):
                     print("미구현")
                 elif sel01 == '5':
                     break
-        elif sel == '6':  #test
+        elif sel == '6':
             print("로그아웃합니다.")
             break
         elif sel == '7':
