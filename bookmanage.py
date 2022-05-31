@@ -29,7 +29,7 @@ borrow_book = []
 end_book = []
 rebook = []
 
-con = sqlite3.connect("book2.db",isolation_level=None)
+con = sqlite3.connect("book.db",isolation_level=None)
 
 c = con.cursor()
 
@@ -54,7 +54,7 @@ def main(nowlogin):
                 name = input("저자을 입력해주세요.\n> ")
                 c.execute(f"SELECT indexnum, bookname, writer FROM booktbl where writer like '%{name}%'")
                 for i in c.fetchall():
-                    print(str(i[0]) + " - " + str(i[1]) + " - " + str(i[2]))
+                    print(str(i[0]) + " - " + str(i[1]) + " ◆ " + str(i[2]))
             elif cho == '2':
                 name = input("도서명을 입력해주세요.\n> ")
                 c.execute(f"SELECT indexnum, bookname, writer FROM booktbl where bookname like '%{name}%'")
@@ -155,13 +155,13 @@ def main(nowlogin):
                     sel7 = input("고유번호를 입력해주세요\n> ")
                     j = 1
                     for i in nowlogin.book:
-                        if i[0].find(sel7):
+                        if i[0].find(sel7) != -1:
                             print(str(j) + " - " + str(i[0]) + " - " + str(i[1]) + " - " + str(i[2]))
                         j += 1
                     repay = input("반납할 책의 번호를 입력해주세요.")
                     j = 1
                     for i in nowlogin.book:
-                        if i[0].find(sel7) and repay == str(j):
+                        if i[0].find(sel7) != -1 and repay == str(j):
                             print(str(i[0]) + " - " + str(i[1]) + " - " + str(i[2]))
                             rebook.append(i)
                             print("반납하였습니다.")
@@ -215,7 +215,7 @@ def main(nowlogin):
             doprice = input("기증하실 책의 가격을 입력해주세요.\n> ")
             dolibrary = input("기증하실 도서관을 입력해주세요.\n> ")
             c.execute("SELECT COUNT(*) FROM booktbl")
-            maxnum = int(c.fetchall()[0][0])
+            maxnum = int(c.fetchall()[0][0]) + 1
             c.execute("SELECT * FROM booktbl ORDER BY indexnum DESC")
             maxindex = c.fetchall()[0][4]
             moreindex = str(int(maxindex[3:])+1)
@@ -224,7 +224,7 @@ def main(nowlogin):
             indexnumber = str(maxindex[:3] + str(moreindex))
             print(indexnumber)
             # indexnumber가 문제있나봄, 안됨
-            c.execute(f"insert into booktbl values ({maxnum}, {dolibrary}, '비치자료', '일반', {indexnumber}, {dobook}, {doname}, {dopub}, {doyear}, {doplace}, '원본', {doprice}, '책', {doname}, '1')")
+            c.execute(f"insert into booktbl values ({maxnum}, {dolibrary}, '비치자료', '일반', '1', {dobook}, {doname}, {dopub}, {doyear}, {doplace}, '원본', {doprice}, '책', {doname}, '1', 'asdf')")
         elif sel == '5':
             while True:
                 nowlogin.printinfo()
@@ -262,7 +262,7 @@ def main(nowlogin):
             print("프로그램을 종료합니다\n")
             exit(0)
         elif sel == '0':
-            c.execute("SELECT * FROM Books")
+            c.execute("SELECT * FROM booktbl")
             print(c.fetchall())
 
 cnt = 0
