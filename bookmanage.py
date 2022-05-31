@@ -29,7 +29,7 @@ borrow_book = []
 end_book = []
 rebook = []
 
-con = sqlite3.connect("book2.db",isolation_level=None)
+con = sqlite3.connect("book.db",isolation_level=None)
 
 c = con.cursor()
 
@@ -262,7 +262,7 @@ def main(nowlogin):
             print("프로그램을 종료합니다\n")
             exit(0)
         elif sel == '0':
-            c.execute("SELECT * FROM Books")
+            c.execute("SELECT * FROM Booktbl")
             print(c.fetchall())
 
 cnt = 0
