@@ -72,8 +72,8 @@ def login():
                         pass
 
             elif temp == '2':
-                inputid = input("id: ")
-                inputphone = input("phone: ")
+                inputid = input("아이디\n>>> ")
+                inputphone = input("전화번호\n>>> ")
                 for i in userlist:
                     if inputid == i[0] and inputphone == i[3]:
                         print(i[1])

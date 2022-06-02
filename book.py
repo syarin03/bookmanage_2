@@ -4,6 +4,7 @@ import random
 import os
 import time
 
+
 class User:  # 회원 정보와 회원 관련 함수를 담을 클래스
     def __init__(self):  # 유사 c언어 구조체
         self.user_id = None
@@ -26,19 +27,20 @@ class User:  # 회원 정보와 회원 관련 함수를 담을 클래스
         print("아이디: {0} 비밀번호: {1} 이름: {2} 전화번호: {3}".format(
             self.user_id, self.password, self.name, self.phone))
 
+
 borrow_book = []
 end_book = []
 rebook = []
 
-con = sqlite3.connect("book.db",isolation_level=None)
+con = sqlite3.connect("book.db", isolation_level=None)
 
 c = con.cursor()
 daycount = 0
+
+
 def main(nowlogin, daycount):
-    now = datetime.now()
+    now = datetime.now() - timedelta(weeks=1)
     borrowday = now
-    yunchae = datetime.now() + timedelta(weeks=2)
-    print(yunchae)
     while True:
         sel = input("(1) 추천 도서\n(2) 도서 조회\n(3) 대여/반납\n(4) 도서 기증\n(5) 내정보\n(6) 로그아웃\n(7) 프로그램 종료\n> ")
         if sel == '1':
@@ -47,6 +49,7 @@ def main(nowlogin, daycount):
             maxnum = int(c.fetchall()[0][0])
             num = list(range(1, maxnum))
             number = []
+
             for i in range(3):
                 number.append(num.pop(num.index(random.choice(num))))
             for i in number:
@@ -73,9 +76,13 @@ def main(nowlogin, daycount):
         elif sel == '3':
             sel2 = input("(1) 대여하기\n(2) 반납하기\n> ")
             if sel2 == '1':
-                for i in nowlogin.book:       #테스트중
-                    if i[3] < datetime.now(): #테스트중
-                        print("ok")             #테스트중
+                for i in nowlogin.book:
+                    if i[3] + timedelta(weeks=1) < now:
+                        print("연체중")
+                        break
+                if nowlogin.day < now:
+                    print("대여금지중")
+                    main(nowlogin, daycount)
                 while True:
                     sel3 = input("(1) 고유번호로 대여\n(2) 도서명으로 대여\n(3) 저자명으로 대여\n(4) 대여하기\n> ")
                     if sel3 == '1':
@@ -110,7 +117,7 @@ def main(nowlogin, daycount):
                         for i in c.fetchall():
                             print(str(j) + " - " + str(i[0]) + " - " + str(i[1]) + " - " + str(i[2]))
                             j += 1
-                        
+
                         num = input("원하는 책의 번호를 입력하세요.\n> ")
                         j = 1
                         c.execute(f"SELECT indexnum, bookname, writer FROM booktbl where bookname like '%{name}%'")
@@ -132,7 +139,7 @@ def main(nowlogin, daycount):
                         for i in c.fetchall():
                             print(str(j) + " - " + str(i[0]) + " - " + str(i[1]) + " - " + str(i[2]))
                             j += 1
-                        
+
                         num = input("원하는 책의 번호를 입력하세요.\n> ")
                         j = 1
                         c.execute(f"SELECT indexnum, bookname, writer FROM booktbl where writer like '%{name}%'")
@@ -145,11 +152,14 @@ def main(nowlogin, daycount):
                         print("장바구니에 담음")
                     elif sel3 == '4':
                         nowlogin.book += borrow_book
-                        #for i in borrow_book:
-                            #print(str(i[0]) + " - " + str(i[1]) + " - " + str(i[2]))
+                        for i in nowlogin.book:
+                            c.execute(f"insert into renttbl values('{nowlogin.user_id}','{now}','{i[0]}')")
+
+                        for i in borrow_book:
+                            print(str(i[0]) + " - " + str(i[1]) + " - " + str(i[2]))
                         print("대여완료")
                         del borrow_book[:]
-                        print(borrow_book) # 확인용
+                        print(borrow_book)  # 확인용
                         break
             elif sel2 == '2':
                 if len(nowlogin.book) == 0:
@@ -171,10 +181,14 @@ def main(nowlogin, daycount):
                     for i in nowlogin.book:
                         if i[0].find(sel7) != -1 and repay == str(j):
                             print(str(i[0]) + " - " + str(i[1]) + " - " + str(i[2]))
+                            if i[3] + timedelta(weeks=1) < now:
+                                print("ok")
+                                print(nowlogin.day + timedelta(weeks=2))
+                                print("연체함")
+                            nowlogin.book.remove(i)
                             rebook.append(i)
                             print("반납하였습니다.")
-                            nowlogin.book.remove(i)
-                            break
+                            return nowlogin.day
                         j += 1
                 elif sel6 == '2':
                     for i in nowlogin.book:
@@ -223,16 +237,9 @@ def main(nowlogin, daycount):
             doprice = input("기증하실 책의 가격을 입력해주세요.\n> ")
             dolibrary = input("기증하실 도서관을 입력해주세요.\n> ")
             c.execute("SELECT COUNT(*) FROM booktbl")
-            maxnum = int(c.fetchall()[0][0])+1
-            c.execute("SELECT * FROM booktbl ORDER BY indexnum DESC")
-            maxindex = c.fetchall()[0][4]
-            moreindex = str(int(maxindex[3:])+1)
-            while len(moreindex) < 9:
-                moreindex = "0" + moreindex
-            indexnumber = str(maxindex[:3] + str(moreindex))
-            print(indexnumber)
-            # indexnumber가 문제있나봄, 안됨
-            c.execute(f"insert into booktbl values ({maxnum}, {dolibrary}, '비치자료', '일반', '1', {dobook}, {doname}, {dopub}, {doyear}, {doplace}, '원본', {doprice}, '책', {doname}, '1')")
+            maxnum = int(c.fetchall()[0][0]) + 1
+            c.execute(
+                f"insert into booktbl values ({maxnum}, '{dolibrary}', '비치자료', '일반', '1', '{dobook}', '{doname}', '{dopub}', {doyear}, '{doplace}', '원본', {doprice}, '책', '{doname}', '1')")
         elif sel == '5':
             while True:
                 nowlogin.printinfo()
@@ -260,7 +267,10 @@ def main(nowlogin, daycount):
                         nowlogin.phone = change_phone
                         print("변경된 전화번호: ", nowlogin.phone)
                 elif sel01 == '4':
-                    print("미구현")
+                    print("연체된 책")
+                    for i in nowlogin.book:
+                        if i[3] + timedelta(weeks=1) < now:
+                            print(i)
                 elif sel01 == '5':
                     break
         elif sel == '6':
@@ -279,8 +289,9 @@ def main(nowlogin, daycount):
             c.execute("SELECT * FROM booktbl")
             print(c.fetchall())
 
+
 cnt = 0
-userList = [] 
+userList = []
 
 while True:
     sel = input("(1) 회원가입\n(2) 로그인\n(3) ID/PW 찾기\n(4) 프로그램 종료\n> ")
@@ -301,7 +312,7 @@ while True:
         if registok:
             userList.append("user" + str(cnt))  # 회원정보 리스트에 값 추가하기
             userList[cnt] = User()  # 해당 요소를 User 클래스로 만들어주기
-            userList[cnt].set_user(userid, password, name, phone, 0, 0)  # input을 통해 값을 입력받고 각각 값으로 저장
+            userList[cnt].set_user(userid, password, name, phone, 0, datetime.now())  # input을 통해 값을 입력받고 각각 값으로 저장
             print()
 
             print("회원가입이 완료되었습니다\n")
