@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 import sqlite3
 import random
 import os
@@ -32,8 +33,12 @@ rebook = []
 con = sqlite3.connect("book.db",isolation_level=None)
 
 c = con.cursor()
-
-def main(nowlogin):
+daycount = 0
+def main(nowlogin, daycount):
+    now = datetime.now()
+    borrowday = now
+    yunchae = datetime.now() + timedelta(weeks=2)
+    print(yunchae)
     while True:
         sel = input("(1) 추천 도서\n(2) 도서 조회\n(3) 대여/반납\n(4) 도서 기증\n(5) 내정보\n(6) 로그아웃\n(7) 프로그램 종료\n> ")
         if sel == '1':
@@ -68,6 +73,9 @@ def main(nowlogin):
         elif sel == '3':
             sel2 = input("(1) 대여하기\n(2) 반납하기\n> ")
             if sel2 == '1':
+                for i in nowlogin.book:       #테스트중
+                    if i[3] < datetime.now(): #테스트중
+                        print("ok")             #테스트중
                 while True:
                     sel3 = input("(1) 고유번호로 대여\n(2) 도서명으로 대여\n(3) 저자명으로 대여\n(4) 대여하기\n> ")
                     if sel3 == '1':
@@ -87,7 +95,7 @@ def main(nowlogin):
                         for i in c.fetchall():
                             if str(j) == num:
                                 print(str(i[0]) + " - " + str(i[1]) + " - " + str(i[2]))
-                                borrow_book.append(i)
+                                borrow_book.append((i[0], i[1], i[2], borrowday))
                                 break
                             j += 1
                         print("장바구니에 담음")
@@ -137,8 +145,8 @@ def main(nowlogin):
                         print("장바구니에 담음")
                     elif sel3 == '4':
                         nowlogin.book += borrow_book
-                        for i in borrow_book:
-                            print(str(i[0]) + " - " + str(i[1]) + " - " + str(i[2]))
+                        #for i in borrow_book:
+                            #print(str(i[0]) + " - " + str(i[1]) + " - " + str(i[2]))
                         print("대여완료")
                         del borrow_book[:]
                         print(borrow_book) # 확인용
@@ -257,10 +265,16 @@ def main(nowlogin):
                     break
         elif sel == '6':
             print("로그아웃합니다.")
-            break
+            return daycount
         elif sel == '7':
             print("프로그램을 종료합니다\n")
             exit(0)
+        elif sel == '8':
+            daycount += 1
+            now = datetime.now() + timedelta(days=daycount)
+            print(daycount)
+            print(now)
+            print("다음날\n")
         elif sel == '0':
             c.execute("SELECT * FROM booktbl")
             print(c.fetchall())
@@ -307,7 +321,7 @@ while True:
                 if i.user_id == userid:  # 입력받은 아이디와 같은 아이디가 리스트 내에 있는지 확인하고
                     if i.password == pw:  # 여기서 비번까지 맞다면
                         nowlogin = i
-                        main(i)  # 메인화면 함수를 불러오는 것
+                        daycount = main(i, daycount)  # 메인화면 함수를 불러오는 것
                         loop = False  # while문을 종료시켜야 하기 때문에 false로 바꿔주고
                         break  # 해당 for문 또한 종료
                     else:  # 이건 아이디는 있는데 비번이 잘못됐을 경우
