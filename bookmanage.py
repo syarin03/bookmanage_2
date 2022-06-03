@@ -1,8 +1,6 @@
 from datetime import datetime, timedelta
 import sqlite3
 import random
-import os
-import time
 
 
 class User:  # 회원 정보와 회원 관련 함수를 담을 클래스
@@ -309,87 +307,91 @@ def main(nowlogin, daycount):
 
 cnt = 0
 userList = []
-
-while True:
-    sel = input("(1) 회원가입\n(2) 로그인\n(3) ID/PW 찾기\n(4) 프로그램 종료\n> ")
-    if sel == '1':
-        registok = True
-        userid = input("아이디\n> ")
-        password = input("비밀번호\n> ")
-        name = input("이름\n> ")
-        phone = input("전화번호\n> ")
-        if len(userList) != 0:
-            for i in userList:
-                if i.user_id == userid:
-                    print("중복된 아이디입니다\n")
-                    registok = False
+def login():
+    while 1:
+        user = User()
+        c.execute("SELECT * FROM usertbl")
+        userlist = c.fetchall()
+        print(userlist)
+        sel = input("(1) 로그인\n(2) 회원가입\n(3) 아이디/비밀번호 찾기\n(4) 프로그램 종료\n>>> ")
+        if sel == '1':
+            inputid = input("아이디\n>>> ")
+            inputpw = input("비밀번호\n>>> ")
+            for i in userlist:
+                if inputid == i[0] and inputpw == i[1]:
+                    user.userId = i[0]
+                    user.userPW = i[1]
+                    user.userName = i[2]
+                    user.userPhone = i[3]
+                    print("로그인에 성공하셨습니다")
+                    main(user, daycount)
                     break
+                elif inputid == i[0] and inputpw != i[1]:
+                    print("비밀번호를 다시 입력해주세요.")
+                    pass
                 else:
-                    registok = True
-        if registok:
-            userList.append("user" + str(cnt))  # 회원정보 리스트에 값 추가하기
-            userList[cnt] = User()  # 해당 요소를 User 클래스로 만들어주기
-            userList[cnt].set_user(userid, password, name, phone, 0, datetime.now())  # input을 통해 값을 입력받고 각각 값으로 저장
-            print()
+                    pass
 
-            print("회원가입이 완료되었습니다\n")
-            cnt += 1  # 이건 리스트 인덱스 때문에 늘려주는 것
+        elif sel == '2':
+            registid = input("id: ")
+            registpw = input("pw: ")
+            registname = input("name: ")
+            registphone = input("phone: ")
+            c.execute("select userid from usertbl")
+            idlist = c.fetchall()
+            print(idlist)
 
+            if len(idlist) == 0:
+                print("회원가입에 성공하셨습니다\n")
+                c.execute(f"insert into usertbl values('{registid}', '{registpw}', '{registname}', '{registphone}', 0)")
 
-    elif sel == '2':
-        loop = True  # 단순 while문을 돌리기 위한 변수
-        while loop:
-            if len(userList) == 0:
-                print("등록된 회원 정보가 존재하지 않습니다\n회원가입 먼저 해주세요\n")
-                break
-            userid = input("ID\n> ")
-            pw = input("PW\n> ")
-            for i in userList:  # 유저 리스트로 반복문을 굴리면서
-                wrong_id = False  # 미리 false로 해둔 이유는 로그인 정보가 일치하지 않을 때의 값을 true로 두기 위해서
-                if i.user_id == userid:  # 입력받은 아이디와 같은 아이디가 리스트 내에 있는지 확인하고
-                    if i.password == pw:  # 여기서 비번까지 맞다면
-                        nowlogin = i
-                        daycount = main(i, daycount)  # 메인화면 함수를 불러오는 것
-                        loop = False  # while문을 종료시켜야 하기 때문에 false로 바꿔주고
-                        break  # 해당 for문 또한 종료
-                    else:  # 이건 아이디는 있는데 비번이 잘못됐을 경우
-                        print("비밀번호를 잘못 입력하셨습니다\n")
-                        break  # 해당 for문 또한 종료
-                    wrong_id = False  # 얘는 계속 아이디가 틀린 게 아닌 이상 늘 false여야 하기 때문에 재차 초기화 해주는거고
-                else:  # 이건 아이디가 등록되어 있지 않은 경우, 틀린 경우도 포함이겠죠
-                    wrong_id = True
-            if wrong_id:  # 여기서 아이디가 있는지 없는지 확인하고 없다면
-                print("존재하지 않는 아이디입니다\n")  # 존재하지 않는다고 알려주기
-    elif sel == '3':
-        if len(userList) == 0:
-            print("등록된 회원 정보가 존재하지 않습니다\n회원가입 먼저 해주세요\n")
-            continue
-        loop = True
-        while loop:
-            find_sel = input("(1) 아이디 찾기\n(2) 비밀번호 찾기\n(3) 돌아가기\n> ")
-            if find_sel == '1':
-                for i in userList:
-                    if input("이름 입력\n> ") == i.name:
-                        if input("연락처 입력\n> ") == i.phone:
-                            print("ID: {0}".format(i.user_id))
-                        else:
-                            print("입력하신 연락처 정보가 존재하지 않습니다\n")
+            elif tuple(registid) not in idlist:
+                c.execute("SELECT * FROM usertbl ORDER BY userindex DESC")
+                cnt = c.fetchall()[0][4] + 1
+                print("회원가입에 성공하셨습니다\n")
+                c.execute(
+                    f"insert into usertbl values('{registid}', '{registpw}', '{registname}', '{registphone}', {cnt})")
+
+            else:
+                print("중복된 아이디입니다\n")
+
+        elif sel == '3':
+            c.execute("select * from usertbl")
+            userlist = c.fetchall()
+            temp = input("(1) 아이디 찾기\n(2) 비밀번호 찾기\n(3) 돌아가기\n>>> ")
+            if temp == '1':
+                inputname = input("name: ")
+                inputphone = input("phone: ")
+                for i in userlist:
+                    if inputname == i[2] and inputphone == i[3]:
+                        print(i[0])
+                        break
+                    elif inputname == i[2] and inputphone != i[3]:
+                        print("번호를 잘못입력하였습니다.")
+                        pass
                     else:
-                        print("입력하신 이름의 계정이 존재하지 않습니다\n")
-                    break
-            elif find_sel == '2':
-                for i in userList:
-                    if input("아이디 입력\n> ") == i.user_id:
-                        if input("전화번호 입력\n> ") == i.phone:
-                            print("PW: {0}".format(i.password))
-                        else:
-                            print("입력하신 연락처 정보가 존재하지 않습니다\n")
+                        print("등록되지 않은 사용자입니다.")
+                        pass
+
+            elif temp == '2':
+                inputid = input("아이디\n>>> ")
+                inputphone = input("전화번호\n>>> ")
+                for i in userlist:
+                    if inputid == i[0] and inputphone == i[3]:
+                        print(i[1])
+                        break
+                    elif inputid == i[0] and inputphone != i[3]:
+                        print("번호를 잘못입력하였습니다.")
+                        pass
                     else:
-                        print("입력하신 아이디가 존재하지 않습니다\n")
-                    break
-            elif find_sel == '3':
-                print("선택 화면으로 돌아갑니다\n")
-                break
-    elif sel == '4':
-        print("프로그램을 종료합니다\n")
-        exit(0)
+                        print("정보를 잘못 입력하였습니다.")
+                        pass
+            else:
+                pass
+        elif sel == '4':
+            print("프로그램을 종료합니다.")
+            exit(0)
+        else:
+            pass
+
+login()
